@@ -16,4 +16,3 @@ selectors = [
 [metadata]
 chapter_title = "div#chapter-title"
 story_container = "div#storycontent"
-formatter_suffix = "hr"
