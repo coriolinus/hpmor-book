@@ -76,8 +76,14 @@ def extract_authornote_prefix(config, soup, title):
     acontent.contents = []
 
     # update the title
+    chnum, _ = title.split(":")
+    appendix_title = f"Appendix A: {chnum} Author's Notes"
     atitle = appendix.select(config["metadata"]["chapter_title"])[0]
-    atitle.string = f"Appendix 1: {title}"
+    atitle.string = appendix_title
+    breakpoint()
+    appendix.html.head.title.string = (
+        f"Harry Potter and the Methods of Rationality, {appendix_title}"
+    )
 
     first_story_element = elements[n]
     # move upwards until we have a direct child of content
@@ -110,7 +116,7 @@ def process(config, input_path, out_dir):
     if config["interactive"]:
         appendix = extract_authornote_prefix(config, soup, title)
         if appendix is not None:
-            a_fn = Path(f"appendix_1_{out_fn}")
+            a_fn = Path(f"appendix_a_{out_fn}")
             a_path = out_dir / a_fn
             with open(a_path, "w") as f:
                 f.write(appendix.prettify())
