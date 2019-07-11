@@ -1,0 +1,14 @@
+[paths]
+source = "../book-src"
+target = "../target"
+extension = "html"
+
+[strip]
+selectors = [
+    "meta[name=\"generator\"]",
+    "script",
+    "div#access",
+    "div#nav-top",
+    "div#nav-bottom",
+    "div#footer",
+]

@@ -10,4 +10,5 @@ html5lib==1.0.1
 pip-tools==3.8.0
 six==1.12.0               # via html5lib, pip-tools
 soupsieve==1.9.2          # via beautifulsoup4
+toml==0.10.0
 webencodings==0.5.1       # via html5lib

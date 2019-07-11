@@ -1,3 +1,4 @@
 pip-tools                           # for pip-compile
 beautifulsoup4                      # for HTML parsing
 html5lib                            # lower-level html parser
+toml                                # config file
