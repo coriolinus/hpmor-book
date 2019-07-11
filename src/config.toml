@@ -1,4 +1,4 @@
-omake = [ "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3",]
+omake = [ "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", ]
 
 [paths]
 source = "../book-src"

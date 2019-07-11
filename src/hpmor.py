@@ -246,7 +246,8 @@ def process(config, input_path, out_dir):
     except Omake:
         out_fn = Path(f"appendix_b_{out_fn}")
         config.setdefault("omake", [])
-        config["omake"].append(title)
+        if title not in config["omake"]:
+            config["omake"].append(title)
         dumpconfig(config)
 
     else:
