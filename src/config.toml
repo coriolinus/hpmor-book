@@ -1,18 +1,33 @@
+omake = [ "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3",]
+
 [paths]
 source = "../book-src"
 target = "../target"
 extension = "html"
 
 [strip]
-selectors = [
-    "meta[name=\"generator\"]",
-    "script",
-    "div#access",
-    "div#nav-top",
-    "div#nav-bottom",
-    "div#footer",
-]
+selectors = [ "meta[name=\"generator\"]", "script", "div#access", "div#nav-top", "div#nav-bottom", "div#footer",]
 
 [metadata]
 chapter_title = "div#chapter-title"
 story_container = "div#storycontent"
+
+[author_notes]
+"Chapter 1: A Day of Very Low Probability" = 73
+"Chapter 10: Self Awareness, Part II" = 12
+"Chapter 100: Precautionary Measures, Pt 1" = 0
+"Chapter 101: Precautionary Measures, Pt 2" = 0
+"Chapter 102: Caring" = 0
+"Chapter 103: Tests" = 0
+"Chapter 104: The Truth, Pt 1, Riddles and Answers" = 0
+"Chapter 105: The Truth, Pt 2" = 0
+"Chapter 106: The Truth, Pt 3" = 0
+"Chapter 107: The Truth, Pt 4" = 0
+"Chapter 108: The Truth, Pt 5, Answers and Riddles" = 0
+"Chapter 109: Reflections" = 0
+"Chapter 110: Reflections, Pt 2" = 0
+"Chapter 111: Failure, Pt 1" = 0
+"Chapter 112: Failure, Pt 2" = 0
+"Chapter 113: Final Exam" = 0
+"Chapter 114: Shut Up and Do The Impossible" = 0
+"Chapter 115: Shut Up and Do The Impossible, Pt 2" = 5

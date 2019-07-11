@@ -25,46 +25,89 @@ def relpath(path):
     return Path(__file__).parent / path
 
 
-def extract_authornote_prefix(config, soup, title):
-    content = soup.select(config["metadata"]["story_container"])[0]
+class Omake(Exception):
+    """
+    Omake are intentionally non-canonical chapters which should be moved into an 
+    appendix.
+    """
 
-    # print descendants in batches of 10, with line numbers, until we're done
-    block_size = 10
+    pass
+
+
+def dumpconfig(config):
+    i = config["interactive"]
+    del config["interactive"]
+    with open(relpath("config.toml"), "w") as f:
+        toml.dump(config, f)
+    config["interactive"] = i
+
+
+def extract_authornote_prefix(config, soup, title):
+    try:
+        if title in config["omake"]:
+            raise Omake()
+    except KeyError:
+        pass
+
+    try:
+        n = config["author_notes"][title]
+    except KeyError:
+        n = None
+
+    content = soup.select(config["metadata"]["story_container"])[0]
     elements = list(content.descendants)
-    print(f"Interactive author-note selection for {title}:")
-    for block in range(len(elements) // block_size):
-        block_start = block_size * block
-        block_end = block_start + block_size
-        for block_idx, element in enumerate(elements[block_start:block_end]):
-            idx = block_start + block_idx
-            el_str = (
-                f"<{element.name}>" if element.name is not None else element.strip()
-            )
-            if len(el_str) == 0:
+
+    if n is None and config["interactive"]:
+        block_size = 10
+        # print descendants in batches of 10, with line numbers, until we're done
+        print(f"Interactive author-note selection for {title}:")
+        for block in range(len(elements) // block_size):
+            block_start = block_size * block
+            block_end = block_start + block_size
+            for block_idx, element in enumerate(elements[block_start:block_end]):
+                idx = block_start + block_idx
+                el_str = (
+                    f"<{element.name}>" if element.name is not None else element.strip()
+                )
+                if len(el_str) == 0:
+                    continue
+
+                print(f"{idx:04}: {el_str}")
+
+            print()
+            print("Enter number of first non-author-note line, or")
+            print(" n for the next block, or")
+            print(" o to declare the whole chaper omake, or")
+            print(" q to exit interactive selection for this file:")
+            n = input("> ").strip().lower()
+            print()
+
+            if n == "" or n[0] == "n":
                 continue
 
-            print(f"{idx:04}: {el_str}")
+            if n[0] == "o":
+                raise Omake()
 
-        print("Enter number of first non-author-note line, or")
-        print(" n for the next block, or")
-        print(" q to exit interactive selection for this file:")
-        n = input("> ").strip().lower()
-        if n == "" or n[0] == "n":
-            continue
+            if n[0] == "q":
+                return None
 
-        if n[0] == "q":
-            return None
+            try:
+                n = int(n)
+            except ValueError:
+                print("invalid input; aborting")
+                return None
 
-        try:
-            n = int(n)
-        except ValueError:
-            print("invalid input; aborting")
-            return None
+            break
 
-        if n == 0:
-            return None
+    if n is None:
+        return None
 
-        break
+    config.setdefault("author_notes", {})
+    config["author_notes"][title] = n
+    dumpconfig(config)
+
+    if n == 0:
+        return None
 
     # since we know we have some appendix notes at this point, let's make the
     # framework into which we'll stuff this appendix
@@ -80,7 +123,6 @@ def extract_authornote_prefix(config, soup, title):
     appendix_title = f"Appendix A: {chnum} Author's Notes"
     atitle = appendix.select(config["metadata"]["chapter_title"])[0]
     atitle.string = appendix_title
-    breakpoint()
     appendix.html.head.title.string = (
         f"Harry Potter and the Methods of Rationality, {appendix_title}"
     )
@@ -108,21 +150,32 @@ def process(config, input_path, out_dir):
         for element in soup.select(strip_selector):
             element.decompose()
 
-    title = soup.select(config["metadata"]["chapter_title"])[0].get_text()
+    title = (
+        soup.select(config["metadata"]["chapter_title"])[0]
+        .get_text()
+        .replace("\n", " ")
+    )
     out_fn = Path(f"{int(input_path.stem):03}_{slugify(title)}{input_path.suffix}")
     print(out_fn)
-    out_path = out_dir / out_fn
 
-    if config["interactive"]:
+    try:
         appendix = extract_authornote_prefix(config, soup, title)
+    except Omake:
+        out_fn = Path(f"appendix_b_{out_fn}")
+        config.setdefault("omake", [])
+        config["omake"].append(title)
+        dumpconfig(config)
+
+    else:
         if appendix is not None:
             a_fn = Path(f"appendix_a_{out_fn}")
             a_path = out_dir / a_fn
             with open(a_path, "w") as f:
-                f.write(appendix.prettify())
+                f.write(str(appendix))
 
+    out_path = out_dir / out_fn
     with open(out_path, "w") as f:
-        f.write(soup.prettify())
+        f.write(str(soup))
 
 
 def main():
@@ -135,10 +188,19 @@ def main():
         action="store_true",
         help="use interactive mode to separate headers and footers",
     )
+    parser.add_argument(
+        "-R",
+        "--redo",
+        action="store_true",
+        help="redo interactive mode for chapters already configured",
+    )
     args = parser.parse_args()
 
     with open(relpath("config.toml")) as f:
         config = toml.load(f)
+
+    if args.redo and "author_notes" in config:
+        del config["author_notes"]
 
     config["interactive"] = args.interactive
 
@@ -148,11 +210,15 @@ def main():
     ):
         output_path.unlink()
 
-    for input_path in src.glob(f"*.{config['paths']['extension']}"):
-        output_dir = relpath(config["paths"]["target"])
-        if not output_dir.exists():
-            output_dir.mkdir(parents=True)
-        process(config, input_path, output_dir)
+    try:
+        for input_path in src.glob(f"*.{config['paths']['extension']}"):
+            output_dir = relpath(config["paths"]["target"])
+            if not output_dir.exists():
+                output_dir.mkdir(parents=True)
+            process(config, input_path, output_dir)
+    except KeyboardInterrupt:
+        # we don't need a traceback in this case
+        pass
 
 
 if __name__ == "__main__":
