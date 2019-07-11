@@ -1,4 +1,4 @@
-omake = [ "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3",]
+omake = [ "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3", "Chapter 11: Omake Files 1, 2, 3",]
 
 [paths]
 source = "../book-src"
@@ -31,3 +31,41 @@ story_container = "div#storycontent"
 "Chapter 113: Final Exam" = 0
 "Chapter 114: Shut Up and Do The Impossible" = 0
 "Chapter 115: Shut Up and Do The Impossible, Pt 2" = 5
+"Chapter 116: Aftermath, Something to Protect, Pt 0" = 0
+"Chapter 119: Something to Protect: Albus Dumbledore" = 0
+"Chapter 12: Impulse Control" = 4
+"Chapter 120: Something to Protect: Draco Malfoy" = 38
+"Chapter 117: Something to Protect: Minerva McGonagall" = 0
+"Chapter 118: Something to Protect: Professor Quirrell" = 0
+"Chapter 121: Something to Protect: Severus Snape" = 0
+"Chapter 122: Something to Protect: Hermione Granger" = 0
+"Chapter 13: Asking the Wrong Questions" = 7
+
+[footnotes]
+"Chapter 104: The Truth, Pt 1, Riddles and Answers" = 1240
+"Chapter 105: The Truth, Pt 2" = 341
+"Chapter 106: The Truth, Pt 3" = 172
+"Chapter 107: The Truth, Pt 4" = 446
+"Chapter 109: Reflections" = 501
+"Chapter 110: Reflections, Pt 2" = 194
+"Chapter 111: Failure, Pt 1" = 1041
+"Chapter 112: Failure, Pt 2" = 123
+"Chapter 113: Final Exam" = 280
+"Chapter 114: Shut Up and Do The Impossible" = 325
+"Chapter 115: Shut Up and Do The Impossible, Pt 2" = 395
+"Chapter 116: Aftermath, Something to Protect, Pt 0" = 262
+"Chapter 1: A Day of Very Low Probability" = -1
+"Chapter 10: Self Awareness, Part II" = -1
+"Chapter 100: Precautionary Measures, Pt 1" = -1
+"Chapter 101: Precautionary Measures, Pt 2" = -1
+"Chapter 102: Caring" = -1
+"Chapter 103: Tests" = -1
+"Chapter 108: The Truth, Pt 5, Answers and Riddles" = -1
+"Chapter 119: Something to Protect: Albus Dumbledore" = 1020
+"Chapter 12: Impulse Control" = -1
+"Chapter 120: Something to Protect: Draco Malfoy" = 266
+"Chapter 117: Something to Protect: Minerva McGonagall" = 185
+"Chapter 118: Something to Protect: Professor Quirrell" = 95
+"Chapter 121: Something to Protect: Severus Snape" = 153
+"Chapter 122: Something to Protect: Hermione Granger" = 1145
+"Chapter 13: Asking the Wrong Questions" = -1
