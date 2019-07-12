@@ -262,6 +262,86 @@ def process(config, input_path, out_dir):
         f.write(str(soup))
 
 
+def maketoc(config, output_dir):
+    print("000_toc.html")
+
+    firstfile = next(output_dir.glob(f"*.{config['paths']['extension']}"))
+    with open(firstfile) as f:
+        soup = BeautifulSoup(f.read(), "html5lib")
+
+    # update the title
+    title = soup.select(config["metadata"]["chapter_title"])[0]
+    title.string = "Table of Contents"
+    soup.html.head.title.string = (
+        f"Harry Potter and the Methods of Rationality, {title.string}"
+    )
+
+    # clear out the body
+    content = soup.select(config["metadata"]["story_container"])[0]
+    content.contents = []
+
+    # make lists: chapters, appendices
+    # strictly, these are lists, but we store dicts, because we may
+    # encounter them out of order
+    chapters = {}
+    appendices = {}
+
+    for chapter in output_dir.glob(f"*.{config['paths']['extension']}"):
+        with open(chapter) as f:
+            ch_soup = BeautifulSoup(f.read(), "html5lib")
+        ch_title = (
+            ch_soup.select(config["metadata"]["chapter_title"])[0]
+            .get_text()
+            .replace("\n", " ")
+        )
+
+        if chapter.name.startswith("appendix"):
+            key = chapter.name[9:14]
+            chapters[key] = (chapter, ch_title)
+        else:
+            key = chapter.name[:3]
+            appendices[key] = (chapter, ch_title)
+
+    chapter_list = soup.new_tag("ul")
+    for key in sorted(chapters.keys()):
+        ch_path, ch_title = chapters[key]
+        link = soup.new_tag("a", href=ch_path.name)
+        link.string = ch_title
+        item = soup.new_tag("li")
+        item.append(link)
+        chapter_list.append(item)
+
+    para = soup.new_tag("p")
+    para.append(chapter_list)
+    content.append(para)
+
+    emph = soup.new_tag("em")
+    emph.string = "Appendices"
+    para = soup.new_tag("p")
+    para.append(emph)
+    content.append(para)
+
+    appendix_list = soup.new_tag("ul")
+    for key in sorted(appendices.keys()):
+        ch_path, ch_title = appendices[key]
+        link = soup.new_tag("a", href=ch_path.name)
+        link.string = ch_title
+        item = soup.new_tag("li")
+        item.append(link)
+        appendix_list.append(item)
+
+    para = soup.new_tag("p")
+    para.append(appendix_list)
+    content.append(para)
+
+    # this _shouldn't_ be required, but it makes the TOC render properly
+    content.contents.reverse()
+
+    output_file = output_dir / "000_toc.html"
+    with open(output_file, "w") as f:
+        f.write(soup.prettify())
+
+
 def main():
     import argparse
 
@@ -292,12 +372,15 @@ def main():
     ):
         output_path.unlink()
 
+    output_dir = relpath(config["paths"]["target"])
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True)
+
     try:
         for input_path in src.glob(f"*.{config['paths']['extension']}"):
-            output_dir = relpath(config["paths"]["target"])
-            if not output_dir.exists():
-                output_dir.mkdir(parents=True)
             process(config, input_path, output_dir)
+
+        maketoc(config, output_dir)
     except KeyboardInterrupt:
         # we don't need a traceback in this case
         pass
