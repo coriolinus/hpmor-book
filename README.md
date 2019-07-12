@@ -29,3 +29,5 @@ This project attempts to build a better ebook, with authors' notes, omake, and o
     ```sh
     src/hpmor.py -iR
     ```
+
+4. When all is done, add `target/000_toc.html` to Calibre, which will automatically import it. Use Calibre to convert into the desired ebook format. 
