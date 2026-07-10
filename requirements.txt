@@ -5,10 +5,20 @@
 #    pip-compile
 #
 beautifulsoup4==4.7.1
-click==7.0                # via pip-tools
+    # via -r requirements.in
+click==7.0
+    # via pip-tools
 html5lib==1.0.1
+    # via -r requirements.in
 pip-tools==3.8.0
-six==1.12.0               # via html5lib, pip-tools
-soupsieve==1.9.2          # via beautifulsoup4
+    # via -r requirements.in
+six==1.12.0
+    # via
+    #   html5lib
+    #   pip-tools
+soupsieve==2.8.4
+    # via beautifulsoup4
 toml==0.10.0
-webencodings==0.5.1       # via html5lib
+    # via -r requirements.in
+webencodings==0.5.1
+    # via html5lib
